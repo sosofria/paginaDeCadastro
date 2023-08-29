@@ -1,155 +1,116 @@
-class User{
-    constructor(nome, email, data, cidade, telefone, cpf){
-        this.nome = nome;
-        this.email = email;
-        this.data = data;
-        this.cidade = cidade;
-        this.telefone = telefone;
-        this.cpf = cpf;
+// Objeto Game
+class Game {
+    constructor(titulo, preco, descricao, plataforma, imagem) {
+        this.titulo = titulo;
+        this.preco = preco;
+        this.descricao = descricao;
+        this.plataforma = plataforma;
+        this.imagem = imagem;
     }
 }
 
-class ListUser{
-    constructor(nome, email, data, cidade, telefone, cpf, idade, signo, cliente){
-        this.nome = nome;
-        this.email = email;
-        this.data = data;
-        this.cidade = cidade;
-        this.telefone = telefone;
-        this.cpf = cpf;
-        this.idade = idade;
-        this.signo = signo;
-        this.cliente = cliente;
+// Classe GamesList
+class GamesList {
+    constructor() {
+        this.games = [];
     }
-}
 
-function createUser(){
-
-}
-
-function showUsers(){
-
-}
-
-function formatedCellphone(cellphone) {
-    console.log("Passou pela funcao formatedCellphone()");
-
-    let cellphoneArray = cellphone.split("");
-    let cellphoneFormated = "(" + cellphoneArray[0] + cellphoneArray[1] + ")"
-        + " " + cellphoneArray[2] + cellphoneArray[3] + cellphoneArray[4]
-        + cellphoneArray[5] + cellphoneArray[6] + "-"
-        + cellphoneArray[7] + cellphoneArray[8]
-        + cellphoneArray[9] + cellphoneArray[10];
-    return cellphoneFormated;
-}
-
-function valida_cpf(cpf) {
-    console.log("Passou pela funcao valida_cpf()");
-
-    var numeros, digitos, soma, i, resultado, digitos_iguais;
-    digitos_iguais = 1;
-    if (cpf.length < 11)
-        return false;
-    for (i = 0; i < cpf.length - 1; i++)
-        if (cpf.charAt(i) != cpf.charAt(i + 1)) {
-            digitos_iguais = 0;
-            break;
+    adicionarJogo(titulo, preco, descricao, plataforma, imagem) {
+        if (isAnyInputEmpty()) {
+            sendMSG("Preencha todos os campos!", "error"); 
+        }else if(!isURLValida(imagem)){
+            sendMSG("URL da imagem inválida!", "error");
         }
-    if (!digitos_iguais) {
-        numeros = cpf.substring(0, 9);
-        digitos = cpf.substring(9);
-        soma = 0;
-        for (i = 10; i > 1; i--)
-            soma += numeros.charAt(10 - i) * i;
-        resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-        if (resultado != digitos.charAt(0))
-            return false;
-        numeros = cpf.substring(0, 10);
-        soma = 0;
-        for (i = 11; i > 1; i--)
-            soma += numeros.charAt(11 - i) * i;
-        resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-        if (resultado != digitos.charAt(1))
-            return false;
+        else{
+            const jogo = new Game(titulo, preco, descricao, plataforma, imagem);
+            this.games.push(jogo);
+            sendMSG("Jogo adicionado com sucesso!", "success");
+            clearInputs();
+        }
+
+
+    }
+}
+
+// Função para exibir jogos
+function exibirJogos() {
+    const gameList = document.getElementById("gameList");
+    gameList.innerHTML = "";
+
+    gamesList.games.forEach(jogo => {
+        const cardDiv = `
+            <div class="card">
+                <img src="${jogo.imagem}" alt="${jogo.titulo}">
+                <h2>${jogo.titulo}</h2>
+                <p>Preço: R$${jogo.preco}</p>
+                <p>Descrição: ${jogo.descricao}</p>
+                <p>Plataforma: ${jogo.plataforma}</p>
+            </div>
+        `;
+
+        gameList.innerHTML += cardDiv;
+    });
+}
+
+// Instância da classe GamesList
+const gamesList = new GamesList();
+
+// Função para adicionar um jogo
+function adicionarJogo() {
+    const titulo = document.getElementById("titulo").value;
+    const preco = document.getElementById("preco").value;
+    const descricao = document.getElementById("descricao").value;
+    const plataforma = document.getElementById("plataforma").value;
+    const imagem = document.getElementById("imagem").value;
+
+    gamesList.adicionarJogo(titulo, preco, descricao, plataforma, imagem);
+
+    exibirJogos();
+}
+
+function isURLValida(url) {
+    if(url.match(/\.(jpeg|jpg|gif|png)$/) != null){
         return true;
-    }
-    else
+    } else {
         return false;
-}
-
-function isUserAlreadyRegistered(cpf){
-
-}
-
-function calculateAge(){
-
-}
-
-function dateinPTBR(date){
-
-}
-
-function getZodiacSign(){
-    let birthdate = new Date(this.birthdate);
-    let day = birthdate.getDate();
-    let month = birthdate.getMonth() + 1;
-    console.log("Passou pelo getSigno() da class User");
-
-    if ((month == 1 && day <= 20) || (month == 12 && day >= 22)) {
-        return "Capricórnio ♑";
-    } else if ((month == 1 && day >= 21) || (month == 2 && day <= 18)) {
-        return "Aquário ♒";
-    } else if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) {
-        return "Peixes ♓";
-    } else if ((month == 3 && day >= 21) || (month == 4 && day <= 20)) {
-        return "Áries ♈";
-    } else if ((month == 4 && day >= 21) || (month == 5 && day <= 20)) {
-        return "Touro ♉";
-    } else if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) {
-        return "Gêmeos ♊";
-    } else if ((month == 6 && day >= 22) || (month == 7 && day <= 22)) {
-        return "Câncer ♋";
-    } else if ((month == 7 && day >= 23) || (month == 8 && day <= 23)) {
-        return "Leão ♌";
-    } else if ((month == 8 && day >= 24) || (month == 9 && day <= 23)) {
-        return "Virgem ♍";
-    } else if ((month == 9 && day >= 24) || (month == 10 && day <= 23)) {
-        return "Libra ♎";
-    } else if ((month == 10 && day >= 24) || (month == 11 && day <= 22)) {
-        return "Escorpião ♏";
-    } else if ((month == 11 && day >= 23) || (month == 12 && day <= 21)) {
-        return "Sagitário ♐";
     }
-}
-
-function isPossibleClient(){
-    
-}
-
-function isAnyInputEmpty(){
-
-}
-
-function showRegister(){
-
 }
 
 function clearInputs(){
-
+    // Limpa os campos de entrada após adicionar o jogo
+    document.getElementById("titulo").value = "";
+    document.getElementById("preco").value = "";
+    document.getElementById("descricao").value = "";
+    document.getElementById("plataforma").value = "";
+    document.getElementById("imagem").value = "";
 }
 
-function sendsuccessMsg(msg){
+function sendMSG(msg,type){  
+    // Como type vai ser a class, será ou error ou success
+    const msgDiv = document.getElementById("msg");
+    msgDiv.innerHTML = "";
 
+    const msgP = `
+        <p class="${type}">${msg}</p>
+    `;
+
+    msgDiv.innerHTML += msgP;
+
+    setTimeout(function(){
+        msgDiv.innerHTML = "";
+    }, 3000);
 }
 
-function sendErrorMsg(msg) {
-    console.log("Passou pela funcao sendErrorMsg()");
+function isAnyInputEmpty(){
+    const titulo = document.getElementById("titulo").value;
+    const preco = document.getElementById("preco").value;
+    const descricao = document.getElementById("descricao").value;
+    const plataforma = document.getElementById("plataforma").value;
+    const imagem = document.getElementById("imagem").value;
 
-    document.getElementById("error-msg").innerHTML = msg;
-    document.getElementById("error-msg").classList.remove("hidden");
-    setTimeout(function () {
-        document.getElementById("error-msg").classList.add("hidden");
-    }, 4000);
+    if(titulo == "" || preco == "" || descricao == "" || plataforma == "" || imagem == ""){
+        return true;
+    } else {
+        return false;
+    }
 }
-
-        
